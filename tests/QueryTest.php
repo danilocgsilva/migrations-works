@@ -33,5 +33,29 @@ class QueryTest extends TestCase
             $query->getRollbackString()
         );
     }
+
+    public function testRollbackQueryWithNull(): void
+    {
+        $queryString = 'INSERT INTO people (id, name, age, height, weight) VALUES (11, "Erika", 18, NULL, 66);';
+        $query = new Query($queryString);
+        $expectedRollbackString = 'DELETE FROM people WHERE id = 11 AND name = "Erika" AND age = 18 AND height IS NULL AND weight = 66;';
+
+        $this->assertSame(
+            $expectedRollbackString,
+            $query->getRollbackString()
+        );
+    }
+
+    public function testRollbackQueryWithDatabase(): void
+    {
+        $queryString = 'INSERT INTO mydatabase.people (id, name, age, height, weight) VALUES (11, "Erika", 18, NULL, 66);';
+        $query = new Query($queryString);
+        $expectedRollbackString = 'DELETE FROM mydatabase.people WHERE id = 11 AND name = "Erika" AND age = 18 AND height IS NULL AND weight = 66;';
+
+        $this->assertSame(
+            $expectedRollbackString,
+            $query->getRollbackString()
+        );
+    }
 }
 

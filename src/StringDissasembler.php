@@ -49,7 +49,12 @@ class StringDissasembler implements StringDissasemblerInterface
             } else {
                 $whereString .= " AND ";
             }
-            $whereString .=  $key . " = " . $pair;
+
+            if ($pair === "NULL") {
+                $whereString .=  $key . " IS " . $pair;
+            } else {
+                $whereString .=  $key . " = " . $pair;
+            }
         }
 
         return $whereString;
