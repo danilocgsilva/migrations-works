@@ -7,10 +7,8 @@ namespace Danilocgsilva\MigrationsWorks;
 use Danilocgsilva\MigrationsWorks\Interfaces\QueryInterface;
 use Danilocgsilva\MigrationsWorks\StringDissasembler;
 
-class Query implements QueryInterface
+class Query extends QueryAbstract implements QueryInterface
 {
-    public function __construct(private string $rawQueryText) {}
-    
     public function getRollbackString(): string
     {
         $stringDissassembler = new StringDissasembler($this->rawQueryText);
@@ -22,4 +20,3 @@ class Query implements QueryInterface
         return 'DELETE FROM ' . $tablePart . ' ' . $wherePart . ';';
     }
 }
-

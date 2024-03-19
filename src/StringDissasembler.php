@@ -6,20 +6,18 @@ namespace Danilocgsilva\MigrationsWorks;
 
 use Danilocgsilva\MigrationsWorks\Interfaces\StringDissasemblerInterface;
 
-class StringDissasembler implements StringDissasemblerInterface
+class StringDissasembler extends QueryAbstract implements StringDissasemblerInterface
 {
-    public function __construct(private string $queryString) {}
-    
     public function getTableName(): string
     {
-        $queryTerms = explode(" ", $this->queryString);
+        $queryTerms = explode(" ", $this->rawQueryText);
         
         return $queryTerms[2];
     }
 
     public function getFieldsValuesPairs(): array
     {
-        $stringParts = preg_split('/(\(|\))/', $this->queryString);
+        $stringParts = preg_split('/(\(|\))/', $this->rawQueryText);
         
         $fieldsPart = $stringParts[1];
         $valuesParts = $stringParts[3];
