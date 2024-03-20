@@ -1,3 +1,3 @@
 1. Create an insert query.
-2. Create its rollback.
+2. Automatically create its rollback.
 3. Done!
