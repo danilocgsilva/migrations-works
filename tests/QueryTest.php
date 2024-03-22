@@ -57,5 +57,19 @@ class QueryTest extends TestCase
             $query->getRollbackString()
         );
     }
+
+    public function testRollbackQueryMultipleLines(): void
+    {
+        $queryString = 'INSERT INTO people (id, name, age, height, weight) VALUES (11, "Erika", 18, NULL, 66);';
+        $queryString .= 'INSERT INTO people (id, name, age, height, weight) VALUES (12, "Lucas", 22, NULL, 88);';
+
+        $query = new Query($queryString);
+        $expectedRollbackString = 'DELETE FROM people WHERE id = 11 AND name = "Erika" AND age = 18 AND height IS NULL AND weight = 66;DELETE FROM people WHERE id = 12 AND name = "Lucas" AND age = 22 AND height IS NULL AND weight = 88;';
+
+        $this->assertSame(
+            $expectedRollbackString,
+            $query->getRollbackString()
+        );
+    }
 }
 
