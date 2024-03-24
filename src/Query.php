@@ -6,17 +6,28 @@ namespace Danilocgsilva\MigrationsWorks;
 
 use Danilocgsilva\MigrationsWorks\Interfaces\QueryInterface;
 use Danilocgsilva\MigrationsWorks\StringDissasembler;
+use Danilocgsilva\MigrationsWorks\StringDisassemblerMultiples;
 
 class Query extends QueryAbstract implements QueryInterface
 {
     public function getRollbackString(): string
     {
-        $stringDissassembler = new StringDissasembler($this->rawQueryText);
+        $stringDisassemblerMultiples = new StringDisassemblerMultiples($this->rawQueryText);
 
-        $tablePart = $stringDissassembler->getTableName();
+        $lines = [];
+        foreach ($stringDisassemblerMultiples->queriesDetected() as $querySingle) {
+            $stringDissassembler = new StringDissasembler($querySingle);
+            $tablePart = $stringDissassembler->getTableName();
+            $wherePart = $stringDissassembler->buildWhereRollback();
+            $lines[] = 'DELETE FROM ' . $tablePart . ' ' . $wherePart . ';';
+        }
 
-        $wherePart = $stringDissassembler->buildWhereRollback();
-        
-        return 'DELETE FROM ' . $tablePart . ' ' . $wherePart . ';';
+        $queryRollback = "";
+
+        foreach ($lines as $line) {
+            $queryRollback .= $line;
+        }
+
+        return $queryRollback;
     }
 }
