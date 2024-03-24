@@ -23,7 +23,7 @@ class UpdateRollback implements UpdateRollbackInterface, QueryInterface
      * @param \Danilocgsilva\MigrationsWorks\Interfaces\FieldValuePairInterface $fieldValuePair
      * @return UpdateRollbackInterface
      */
-    public function setFieldValuePairAfter(FieldValuePairInterface $fieldValuePair): UpdateRollbackInterface
+    public function addFieldValuePairAfter(FieldValuePairInterface $fieldValuePair): UpdateRollbackInterface
     {
         $this->fieldValuePairAfter = $fieldValuePair;
         return $this;
@@ -33,7 +33,7 @@ class UpdateRollback implements UpdateRollbackInterface, QueryInterface
      * @param \Danilocgsilva\MigrationsWorks\Interfaces\FieldValuePairInterface $fieldValuePair
      * @return UpdateRollbackInterface
      */
-    public function setFieldValuePairBefore(FieldValuePairInterface $fieldValuePair): UpdateRollbackInterface
+    public function addFieldValuePairBefore(FieldValuePairInterface $fieldValuePair): UpdateRollbackInterface
     {
         $this->fieldValuePairBefore = $fieldValuePair;
         return $this;

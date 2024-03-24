@@ -8,9 +8,9 @@ interface UpdateRollbackInterface
 {
     public function setTableName(string $tableName): self;
 
-    public function setFieldValuePairBefore(FieldValuePairInterface $fieldValuePair): self;
+    public function addFieldValuePairBefore(FieldValuePairInterface $fieldValuePair): self;
 
-    public function setFieldValuePairAfter(FieldValuePairInterface $fieldValuePair): self;
+    public function addFieldValuePairAfter(FieldValuePairInterface $fieldValuePair): self;
 
     public function setTableIdAndEntityValue(FieldValuePairInterface $fieldValuePair): self;
 }
