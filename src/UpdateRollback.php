@@ -6,12 +6,11 @@ namespace Danilocgsilva\MigrationsWorks;
 use Danilocgsilva\MigrationsWorks\Interfaces\UpdateRollbackInterface;
 use Danilocgsilva\MigrationsWorks\Interfaces\FieldValuePairInterface;
 use Danilocgsilva\MigrationsWorks\Interfaces\QueryInterface;
+use Danilocgsilva\MigrationsWorks\Interfaces\FowardAndBackwardFieldDataInterface;
 
 class UpdateRollback implements UpdateRollbackInterface, QueryInterface
 {
-    private FieldValuePairInterface $fieldValuePairAfter;
-
-    private FieldValuePairInterface $fieldValuePairBefore;
+    private FowardAndBackwardFieldDataInterface $fowardAndBackwardFieldData;
 
     private FieldValuePairInterface $entityIdAndItsValue;
 
@@ -23,19 +22,9 @@ class UpdateRollback implements UpdateRollbackInterface, QueryInterface
      * @param \Danilocgsilva\MigrationsWorks\Interfaces\FieldValuePairInterface $fieldValuePair
      * @return UpdateRollbackInterface
      */
-    public function addFieldValuePairAfter(FieldValuePairInterface $fieldValuePair): UpdateRollbackInterface
+    public function addForwardAndBackwardData(FowardAndBackwardFieldDataInterface $fowardAndBackwardFieldData): UpdateRollbackInterface
     {
-        $this->fieldValuePairAfter = $fieldValuePair;
-        return $this;
-    }
-    
-    /**
-     * @param \Danilocgsilva\MigrationsWorks\Interfaces\FieldValuePairInterface $fieldValuePair
-     * @return UpdateRollbackInterface
-     */
-    public function addFieldValuePairBefore(FieldValuePairInterface $fieldValuePair): UpdateRollbackInterface
-    {
-        $this->fieldValuePairBefore = $fieldValuePair;
+        $this->fowardAndBackwardFieldData = $fowardAndBackwardFieldData;
         return $this;
     }
     
@@ -64,8 +53,8 @@ class UpdateRollback implements UpdateRollbackInterface, QueryInterface
         return sprintf(
             $baseString,
             $this->tableName,
-            $this->fieldValuePairBefore->getField(),
-            $this->fieldValuePairBefore->getValue(),
+            $this->fowardAndBackwardFieldData->getField(),
+            $this->fowardAndBackwardFieldData->getRollbackValue(),
             $this->entityIdAndItsValue->getField(),
             $this->entityIdAndItsValue->getValue()
         );
@@ -77,8 +66,8 @@ class UpdateRollback implements UpdateRollbackInterface, QueryInterface
         return sprintf(
             $baseString,
             $this->tableName,
-            $this->fieldValuePairAfter->getField(),
-            $this->fieldValuePairAfter->getValue(),
+            $this->fowardAndBackwardFieldData->getField(),
+            $this->fowardAndBackwardFieldData->getApplyValue(),
             $this->entityIdAndItsValue->getField(),
             $this->entityIdAndItsValue->getValue()
         );

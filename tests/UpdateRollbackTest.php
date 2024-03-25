@@ -7,21 +7,21 @@ namespace Danilocgsilva\MigrationsWorks\Tests;
 use PHPUnit\Framework\TestCase;
 use Danilocgsilva\MigrationsWorks\UpdateRollback;
 use Danilocgsilva\MigrationsWorks\FieldValuePair;
+use Danilocgsilva\MigrationsWorks\FowardAndBackwardFieldData;
 
 class UpdateRollbackTest extends TestCase
 {
     public function testGetRollbackString(): void
     {
+        $fowardAndBackwardFieldData = (new FowardAndBackwardFieldData())
+            ->setField("name")
+            ->setApplyValue("Robert De Niro")
+            ->setRollbackValue("Ashley Kurts")
+        ;
+        
         $updateRollback = (new UpdateRollback())
             ->setTableName("Customers")
-            ->addFieldValuePairBefore(
-                (new FieldValuePair())
-                    ->setField("name")
-                    ->setValue("Ashley Kurts"))
-            ->addFieldValuePairAfter(
-                (new FieldValuePair())
-                    ->setField("name")
-                    ->setValue("Robert De Niro"))
+            ->addForwardAndBackwardData($fowardAndBackwardFieldData)
             ->setTableIdAndEntityValue(
                 (new FieldValuePair())
                     ->setField("id")
@@ -35,20 +35,19 @@ class UpdateRollbackTest extends TestCase
 
     public function testGetApplyMigrationString(): void
     {
+        $fowardAndBackwardFieldData = (new FowardAndBackwardFieldData())
+            ->setField("name")
+            ->setApplyValue("Robert De Niro")
+            ->setRollbackValue("Ashley Kurts")
+        ;
+        
         $updateRollback = (new UpdateRollback())
-        ->setTableName("Customers")
-        ->addFieldValuePairBefore(
-            (new FieldValuePair())
-                ->setField("name")
-                ->setValue("Ashley Kurts"))
-        ->addFieldValuePairAfter(
-            (new FieldValuePair())
-                ->setField("name")
-                ->setValue("Robert De Niro"))
-        ->setTableIdAndEntityValue(
-            (new FieldValuePair())
-                ->setField("id")
-                ->setValue(45))
+            ->setTableName("Customers")
+            ->addForwardAndBackwardData($fowardAndBackwardFieldData)
+            ->setTableIdAndEntityValue(
+                (new FieldValuePair())
+                    ->setField("id")
+                    ->setValue(45))
         ;
 
         $expectedString = 'UPDATE Customers SET name = "Robert De Niro" WHERE id = 45;';
@@ -58,16 +57,15 @@ class UpdateRollbackTest extends TestCase
 
     public function testGetRollbackString2(): void
     {
+        $fowardAndBackwardFieldData = (new FowardAndBackwardFieldData())
+            ->setField("date_and_hour")
+            ->setApplyValue("2024-04-21 15:01:04")
+            ->setRollbackValue("2024-03-15 09:42:56")
+        ;
+        
         $updateRollback = (new UpdateRollback())
             ->setTableName("orders")
-            ->addFieldValuePairBefore(
-                (new FieldValuePair())
-                    ->setField("date_and_hour")
-                    ->setValue("2024-03-15 09:42:56"))
-            ->addFieldValuePairAfter(
-                (new FieldValuePair())
-                    ->setField("date_and_hour")
-                    ->setValue("2024-04-21 15:01:04"))
+            ->addForwardAndBackwardData($fowardAndBackwardFieldData)
             ->setTableIdAndEntityValue(
                 (new FieldValuePair())
                     ->setField("id")
@@ -81,16 +79,15 @@ class UpdateRollbackTest extends TestCase
 
     public function testGetApplyMigrationString2(): void
     {
+        $fowardAndBackwardFieldData = (new FowardAndBackwardFieldData())
+            ->setField("date_and_hour")
+            ->setApplyValue("2024-04-21 15:01:04")
+            ->setRollbackValue("2024-03-15 09:42:56")
+        ;
+        
         $updateRollback = (new UpdateRollback())
             ->setTableName("orders")
-            ->addFieldValuePairBefore(
-                (new FieldValuePair())
-                    ->setField("date_and_hour")
-                    ->setValue("2024-03-15 09:42:56"))
-            ->addFieldValuePairAfter(
-                (new FieldValuePair())
-                    ->setField("date_and_hour")
-                    ->setValue("2024-04-21 15:01:04"))
+            ->addForwardAndBackwardData($fowardAndBackwardFieldData)
             ->setTableIdAndEntityValue(
                 (new FieldValuePair())
                     ->setField("id")
