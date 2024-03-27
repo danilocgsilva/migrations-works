@@ -10,13 +10,21 @@ use Danilocgsilva\MigrationsWorks\StringDisassemblerMultiples;
 
 class Query extends QueryAbstract implements QueryInterface
 {
+    private array $keysToDisable = [];
+
+    public function addKeyToDisable(string $key): self
+    {
+        $this->keysToDisable[] = $key;
+        return $this;
+    }
+
     public function getRollbackString(): string
     {
         $stringDisassemblerMultiples = new StringDisassemblerMultiples($this->rawQueryText);
-
         $lines = [];
         foreach ($stringDisassemblerMultiples->queriesDetected() as $querySingle) {
-            $stringDissassembler = new StringDissasembler($querySingle);
+            $stringDissassembler = (new StringDissasembler($querySingle))
+            ->setIgnoreKeys($this->keysToDisable);
             $tablePart = $stringDissassembler->getTableName();
             $wherePart = $stringDissassembler->buildWhereRollback();
             $lines[] = 'DELETE FROM ' . $tablePart . ' ' . $wherePart . ';';

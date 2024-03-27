@@ -8,11 +8,19 @@ use Danilocgsilva\MigrationsWorks\Interfaces\StringDissasemblerInterface;
 
 class StringDissasembler extends QueryAbstract implements StringDissasemblerInterface
 {
+    private array $ignoreKeys = [];
+    
     public function getTableName(): string
     {
         $queryTerms = explode(" ", $this->rawQueryText);
         
         return $queryTerms[2];
+    }
+
+    public function setIgnoreKeys(array $keys): self
+    {
+        $this->ignoreKeys = $keys;
+        return $this;
     }
 
     public function getFieldsValuesPairs(): array
@@ -42,6 +50,11 @@ class StringDissasembler extends QueryAbstract implements StringDissasemblerInte
 
         $whereString = "";
         foreach ($pairs as $key => $pair) {
+
+            if (in_array($key, $this->ignoreKeys)) {
+                continue;
+            }
+            
             if ($pair === reset($pairs)) {
                 $whereString .= "WHERE ";
             } else {

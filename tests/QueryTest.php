@@ -71,5 +71,18 @@ class QueryTest extends TestCase
             $query->getRollbackString()
         );
     }
+
+    public function testAddKeyToDisable()
+    {
+        $queryString = 'INSERT INTO people (id, name, age, height, weight) VALUES (11, "Erika", 18, 1.78, 66);';
+        $query = new Query($queryString);
+        $query->addKeyToDisable('height');
+        $expectedRollbackString = 'DELETE FROM people WHERE id = 11 AND name = "Erika" AND age = 18 AND weight = 66;';
+
+        $this->assertSame(
+            $expectedRollbackString,
+            $query->getRollbackString()
+        );
+    }
 }
 
