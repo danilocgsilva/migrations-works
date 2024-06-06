@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Danilocgsilva\MigrationsWorks\Tests;
+namespace Danilocgsilva\MigrationsWorks\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use Danilocgsilva\MigrationsWorks\StringDisassemblerMultiples;
