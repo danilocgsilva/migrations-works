@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 namespace Danilocgsilva\MigrationsWorks;
+
 use Danilocgsilva\MigrationsWorks\Interfaces\FieldValuePairInterface;
 
 class FieldValuePair implements FieldValuePairInterface
