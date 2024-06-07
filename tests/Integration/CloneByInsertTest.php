@@ -53,19 +53,19 @@ EOF;
         $this->eraseTable();
 
         $queryGenerating = <<<EOF
-        INSERT INTO users (
-            name,
-            username,
-            password,
-            email,
-            profile
-        ) VALUES (
-            "Helena",
-            "helNa",
-            "anotherverystrongpassword",
-            "helenasas@test.com",
-            "Helga the Viking"
-        );
+INSERT INTO users (
+    name,
+    username,
+    password,
+    email,
+    profile
+) VALUES (
+    "Helena",
+    "helNa",
+    "anotherverystrongpassword",
+    "helenasas@test.com",
+    "Helga the Viking"
+);
 EOF;
 
         $this->fillTestData($queryGenerating);
@@ -73,6 +73,29 @@ EOF;
         $cloneByInsert = new CloneByInsert($this->pdo);
         $queryInsert = $cloneByInsert->clone(1);
         $expectedString = $queryGenerating = 'INSERT INTO users (name, username, password, email, profile) VALUES ("Helena", "helNa", "anotherverystrongpassword", "helenasas@test.com", "Helga the Viking");';
+        $this->assertSame($expectedString, $queryInsert);
+    }
+
+    public function test3CloneByInsert(): void
+    {
+        $this->eraseTable();
+
+        $queryGenerating = <<<EOF
+INSERT INTO payment (
+    process_code,
+    part_name,
+    payment_method
+) VALUES (
+    "0001232",
+    "Robert Anthony",
+    "Credit Card",
+);
+EOF;
+        $this->fillTestData($queryGenerating);
+
+        $cloneByInsert = new CloneByInsert($this->pdo);
+        $queryInsert = $cloneByInsert->clone(1);
+        $expectedString = $queryGenerating = 'INSERT INTO payment (process_code, part_name, payment_method) VALUES ("0001232", "Robert Anthony", "Credit Card");';
         $this->assertSame($expectedString, $queryInsert);
     }
 
