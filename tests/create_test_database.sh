@@ -5,7 +5,9 @@ CREATE DATABASE IF NOT EXISTS migrations_works_tests;
 
 USE migrations_works_tests;
 
-CREATE TABLE IF NOT EXISTS users (
+DROP TABLE users;
+
+CREATE TABLE users (
     id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     username VARCHAR(255) NOT NULL,

@@ -10,13 +10,20 @@ use PDO;
 
 class CloneByInsertTest extends TestCase
 {
-    public function testCloneByInsert(): void
+    private PDO $pdo;
+
+    public function setUp(): void
     {
-        $pdo = new PDO(
+        $this->pdo = new PDO(
             sprintf('mysql:host=%s;dbname=migrations_works_tests', getenv('MIGRATIONS_WORKS_TEST_DB_HOST')),
-            getenv('MIGRATIONS_WORKS_TEST_DB_USER'), 
+            getenv('MIGRATIONS_WORKS_TEST_DB_USER'),
             getenv('MIGRATIONS_WORKS_TEST_DB_PASSWORD')
         );
+    }
+
+    public function testCloneByInsert(): void
+    {
+        $this->eraseTable();
 
         $queryGenerating = <<<EOF
 INSERT INTO users (
@@ -33,12 +40,52 @@ INSERT INTO users (
     "John John"
 );
 EOF;
-        $preResults = $pdo->prepare($queryGenerating);
-        $preResults->execute();
+        $this->fillTestData($queryGenerating);
 
-        $cloneByInsert = new CloneByInsert($pdo);
+        $cloneByInsert = new CloneByInsert($this->pdo);
         $queryInsert = $cloneByInsert->clone(1);
-        $expectedString = $queryGenerating = 'INSERT INTO users (name, username, password, email, profile) VALUES ("John Tonias", "jtonias", "john56756_lola@test.com", "John John");';
+        $expectedString = $queryGenerating = 'INSERT INTO users (name, username, password, email, profile) VALUES ("John Tonias", "jtonias", "mystrongpassword", "john56756_lola@test.com", "John John");';
         $this->assertSame($expectedString, $queryInsert);
+    }
+
+    public function test2CloneByInsert(): void
+    {
+        $this->eraseTable();
+
+        $queryGenerating = <<<EOF
+        INSERT INTO users (
+            name,
+            username,
+            password,
+            email,
+            profile
+        ) VALUES (
+            "Helena",
+            "helNa",
+            "anotherverystrongpassword",
+            "helenasas@test.com",
+            "Helga the Viking"
+        );
+EOF;
+
+        $this->fillTestData($queryGenerating);
+
+        $cloneByInsert = new CloneByInsert($this->pdo);
+        $queryInsert = $cloneByInsert->clone(1);
+        $expectedString = $queryGenerating = 'INSERT INTO users (name, username, password, email, profile) VALUES ("Helena", "helNa", "anotherverystrongpassword", "helenasas@test.com", "Helga the Viking");';
+        $this->assertSame($expectedString, $queryInsert);
+    }
+
+    private function fillTestData(string $query)
+    {
+        $preResults = $this->pdo->prepare($query);
+        $preResults->execute();
+    }
+
+    private function eraseTable(): void
+    {
+        $queryDelete = "DELETE FROM users; ALTER TABLE users AUTO_INCREMENT = 1";
+        $preResults = $this->pdo->prepare($queryDelete);
+        $preResults->execute();
     }
 }
