@@ -12,7 +12,7 @@ class CloneByInsert
     {
     }
 
-    public function clone(int $id)
+    public function clone(int $id): string
     {
         
     }
