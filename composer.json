@@ -9,6 +9,7 @@
         "phpunit/phpunit": "^11.0"
     },
     "require": {
-        "danilocgsilva/database_discover": "^1.6"
+        "danilocgsilva/database_discover": "^1.6",
+        "danilocgsilva/entities_discover": "^3.1"
     }
 }
