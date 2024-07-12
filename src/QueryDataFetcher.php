@@ -13,16 +13,39 @@ class QueryDataFetcher
     
     public function __construct(private PDO $pdo) {}
 
+    public function extractInsert(
+        string $idValue, 
+        string $tableName, 
+        bool $ignore = true
+    ): string
+    {
+        $queryDataFetcher = new QueryDataFetcher($this->pdo);
+        
+        $insertValuesString = implode(", ", ($rowFieldsNamesRaw = $queryDataFetcher->getFieldNamesTable($tableName)));
+
+
+        $queryInsert = sprintf(
+            $ignore ? "INSERT IGNORE INTO %s (%s) VALUES (%s);" : "INSERT INTO %s (%s) VALUES (%s);", 
+            $tableName, 
+            $insertValuesString, 
+            $this->convertSuitableStringValues(
+                $queryDataFetcher->getValuesBasedOnId($tableName, $rowFieldsNamesRaw, $idValue)
+            )
+        );
+        return $queryInsert;
+    }
+
     public function getFieldNamesTable(string $tableName): array
     {
         $fieldsGenerator = (new Discover($this->pdo))->getFieldsFromTable($tableName);
         foreach ($fieldsGenerator as $tableField) {
             $this->fieldsNames[] = (string) $tableField;
         }
+
         return $this->fieldsNames;
     }
     
-    public function getValuesBasedOnId(string $tableName, array $rowFieldsNamesRaw, string $idValue)
+    public function getValuesBasedOnId(string $tableName, array $rowFieldsNamesRaw, string $idValue): array
     {
         $queryFetching = sprintf(
             "SELECT %s FROM %s WHERE %s = :idValue;",
@@ -38,7 +61,7 @@ class QueryDataFetcher
         $rowData = $preResults->fetch();
         $fields = [];
         foreach ($rowData as $fieldDataValue) {
-            $fields[] = $rowData;
+            $fields[] = $fieldDataValue;
         }
 
         return $fields;
@@ -47,5 +70,20 @@ class QueryDataFetcher
     private function getKeyFieldName(): string
     {
         return $this->fieldsNames[0];
+    }
+
+    private function convertSuitableStringValues($rawFieldsValueData)
+    {
+        $suitableValues = [];
+        foreach ($rawFieldsValueData as $rawValue) {
+            if ($rawValue === null) {
+                $suitableValues[] = "NULL";
+            } elseif (is_string($rawValue)) {
+                $suitableValues[] = sprintf("%s%s%s", "\"", $rawValue, "\"");
+            } else {
+                $suitableValues[] = $rawValue;
+            }
+        }
+        return implode(", ", $suitableValues);
     }
 }

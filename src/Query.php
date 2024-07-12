@@ -40,22 +40,5 @@ class Query extends QueryAbstract implements QueryInterface
         return $queryRollback;
     }
 
-    public function extractInsert(
-        string $idValue, 
-        string $tableName, 
-        bool $ignore = true,
-        PDO $pdo
-    ): string
-    {
-        $queryDataFetcher = new QueryDataFetcher($pdo);
-        
-        $queryInsert = sprintf(
-            $ignore ? "INSERT IGNORE INTO %s (%s) VALUES (%s);" : "INSERT INTO %s (%s) VALUES (%s);", 
-            $tableName, 
-            implode(", ", ($rowFieldsNamesRaw = $queryDataFetcher->getFieldNamesTable($tableName))), 
-            implode(", ", $queryDataFetcher->getValuesBasedOnId($tableName, $rowFieldsNamesRaw, $idValue))
-        );
 
-        return $queryInsert;
-    }
 }
