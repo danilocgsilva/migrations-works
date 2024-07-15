@@ -79,7 +79,11 @@ class QueryDataFetcher
             if ($rawValue === null) {
                 $suitableValues[] = "NULL";
             } elseif (is_string($rawValue)) {
-                $suitableValues[] = sprintf("%s%s%s", "\"", $rawValue, "\"");
+                if (preg_match('/\"/', $rawValue)) {
+                    $suitableValues[] = sprintf("%s%s%s", "'", $rawValue, "'");
+                } else {
+                    $suitableValues[] = sprintf("%s%s%s", "\"", $rawValue, "\"");
+                }
             } else {
                 $suitableValues[] = $rawValue;
             }
